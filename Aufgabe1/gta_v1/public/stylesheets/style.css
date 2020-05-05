@@ -57,25 +57,20 @@ ul {
 
 .container {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
 }
 
-.container .tagging {
+.list_map {
   display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
 }
 
-.container .discovery {
-  display: flex;
-  flex-grow: 0.5;
-  flex-direction: column;
-  flex-wrap: wrap;
+.tagging {
+  flex-grow: 1;
+  flex-basis: 25%;
 }
 
-.container .disc_form {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+.discovery {
+  flex-grow: 1;
+  flex-basis: 75%;
 }
+
+
