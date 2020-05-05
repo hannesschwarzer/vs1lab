@@ -24,7 +24,7 @@ footer {
   margin-top: 15px;
 }
 
-label input {
+input {
   display: block;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -57,10 +57,12 @@ ul {
 
 .container {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .list_map {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .tagging {
@@ -69,8 +71,52 @@ ul {
 }
 
 .discovery {
-  flex-grow: 1;
+  flex-grow: 3;
   flex-basis: 75%;
 }
 
+@media only screen and (max-width: 600px) {
 
+  * {
+    align-content: center;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  body {
+    padding: 3px;
+  }
+
+  input {
+    width: 100%;
+  }
+
+  header {
+    width: 100%;
+    text-align: center;
+  }
+
+  .tagging {
+    width: 100%;
+  }
+
+  .discovery {
+    width: 100%;
+  }
+
+  #result-img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .tagmap {
+    width: 100%;
+  }
+
+  .taglist {
+    width: 100%;
+  }
+}
