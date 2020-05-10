@@ -71,12 +71,10 @@ ul {
 
 .container {
   display: flex;
-  /*flex-wrap: wrap;*/
 }
 
 .list_map {
   display: flex;
-  /*flex-wrap: wrap;*/
 }
 
 
@@ -86,13 +84,16 @@ ul {
 
 .discovery {
   flex-grow: 1;
-  /*flex-wrap: wrap;*/
 }
 
 @media only screen and (max-width: 1035px) {
 
   .container{
     flex-wrap: wrap;
+  }
+
+  #filter-form{
+    width: 212px;
   }
 
 }
