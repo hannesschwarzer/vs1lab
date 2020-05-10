@@ -129,6 +129,10 @@ ul {
     width: 100%;
   }
 
+  #filter-form{
+    width: 100%;
+  }
+
   header {
     width: 100%;
     text-align: center;
