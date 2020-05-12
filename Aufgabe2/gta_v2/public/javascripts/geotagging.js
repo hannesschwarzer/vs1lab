@@ -82,7 +82,7 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
     };
 
     // Hier Google Maps API Key eintragen
-    var apiKey = "YOUR_API_KEY_HERE";
+    var apiKey = "7M9jETrf4mRdAyx6JCFGImwbQ3WXJ3wg";
 
     /**
      * Funktion erzeugt eine URL, die auf die Karte verweist.
@@ -119,8 +119,18 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
 
         readme: "Dieses Objekt enthält 'öffentliche' Teile des Moduls.",
 
-        updateLocation: function() {
+        updateLocation: function(tryLocate) {
             // TODO Hier Inhalt der Funktion "update" ergänzen
+            if (tryLocate){
+                document.getElementById("latitude").value = "";
+                document.getElementById("longitude").value = "";
+                document.getElementById("latitude_search").value = getLatitude();
+                document.getElementById("longitude_search").value = getLongitude();
+            } else {
+                alert("")
+            }
+            var mapURL = getLocationMapSrc(47, 40, "", "");
+            document.getElementById("result-img").src=mapURL;
         }
 
     }; // ... Ende öffentlicher Teil
