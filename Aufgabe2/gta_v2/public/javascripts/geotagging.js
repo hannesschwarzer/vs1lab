@@ -120,15 +120,6 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         readme: "Dieses Objekt enthält 'öffentliche' Teile des Moduls.",
 
         updateLocation: function() {
-            // TODO Hier Inhalt der Funktion "update" ergänzen
-            // if (tryLocate){
-            //     document.getElementById("latitude").value = "";
-            //     document.getElementById("longitude").value = "";
-            //     document.getElementById("latitude_search").value = getLatitude();
-            //     document.getElementById("longitude_search").value = getLongitude();
-            // } else {
-            //     alert("")
-            // }
 
            tryLocate(function (pos) {
                 document.getElementById("latitude").value = getLatitude(pos);
