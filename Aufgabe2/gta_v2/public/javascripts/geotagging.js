@@ -119,18 +119,26 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
 
         readme: "Dieses Objekt enthält 'öffentliche' Teile des Moduls.",
 
-        updateLocation: function(tryLocate) {
+        updateLocation: function() {
             // TODO Hier Inhalt der Funktion "update" ergänzen
-            if (tryLocate){
-                document.getElementById("latitude").value = "";
-                document.getElementById("longitude").value = "";
+            // if (tryLocate){
+            //     document.getElementById("latitude").value = "";
+            //     document.getElementById("longitude").value = "";
+            //     document.getElementById("latitude_search").value = getLatitude();
+            //     document.getElementById("longitude_search").value = getLongitude();
+            // } else {
+            //     alert("")
+            // }
+            // var mapURL = getLocationMapSrc(47, 40, "", "");
+            // document.getElementById("result-img").src=mapURL;
+           tryLocate(function () {
+                document.getElementById("latitude").value = getLatitude();
+                document.getElementById("longitude").value = getLongitude();
                 document.getElementById("latitude_search").value = getLatitude();
                 document.getElementById("longitude_search").value = getLongitude();
-            } else {
-                alert("")
-            }
-            var mapURL = getLocationMapSrc(47, 40, "", "");
-            document.getElementById("result-img").src=mapURL;
+            }, function (alertString) {
+                alert(alertString);
+            });
         }
 
     }; // ... Ende öffentlicher Teil
@@ -143,5 +151,4 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
  */
 $(function() {
     alert("Please change the script 'geotagging.js'");
-    // TODO Hier den Aufruf für updateLocation einfügen
 });
