@@ -126,8 +126,8 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                 document.getElementById("longitude").value = getLongitude(pos);
                 document.getElementById("latitude_search").value = getLatitude(pos);
                 document.getElementById("longitude_search").value = getLongitude(pos);
-               var mapURL = getLocationMapSrc(getLatitude(pos), getLongitude(pos),[],16);
-               document.getElementById("result-img").src=mapURL;
+                var mapURL = getLocationMapSrc(getLatitude(pos), getLongitude(pos),[],16);
+                document.getElementById("result-img").src=mapURL;
             }, function (alertString) {
                 alert(alertString);
             });
