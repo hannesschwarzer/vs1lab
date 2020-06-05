@@ -41,7 +41,7 @@ function GeoTag(laititude, longitude, name, hashtag) {
     this.longitude = longitude;
     this.name = name;
     this.hashtag = hashtag;
-};
+}
 
 /**
  * Modul für 'In-Memory'-Speicherung von GeoTags mit folgenden Komponenten:
@@ -59,7 +59,7 @@ var geoTagListElements = [];
 
 var inMemorySpeicherung = (function () {
     var geoTagListReturnItems = [];
-    var types = [longitude, latitude, geoTagName, hashtag];
+    // var types = [longitude, latitude, geoTagName, hashtag];
     var returnArray;
 
     return {
@@ -70,7 +70,7 @@ var inMemorySpeicherung = (function () {
             var listCoordinates = geoTagListElements.forEach(function () {
                 if (longitude) {
                 }
-            })
+            });
 
             // show Results for longitude + radius or latitude + radius;
 
@@ -86,8 +86,8 @@ var inMemorySpeicherung = (function () {
                         && geoTagListReturnItems.indexOf(searchterm) === -1) {
                         geoTagListReturnItems.push(this);
                     }
-                })
-            })
+                });
+            });
             returnArray = geoTagListReturnItems;
         },
 
@@ -99,7 +99,6 @@ var inMemorySpeicherung = (function () {
             returnArray = geoTagListElements;
         },
 
-        //hier
         deleteGeotag: function (name, latitude, longitude, hashtag) {
 
             // var geoTagToDelete = new GeoTag(latitude, longitude, name, hashtag);
@@ -119,7 +118,7 @@ var inMemorySpeicherung = (function () {
             return returnArray;
         }
 
-    }
+    };
 
 })();
 
@@ -155,14 +154,14 @@ app.get('/', function (req, res) {
 // TODO: CODE ERGÄNZEN START
 app.post('/tagging', function (req, res) {
 
-    Content-Type: plain/text;
+    http.contentType = plain/text;
 
     console.log(req.body);
     var addGeotagVariable = function (reqBody) {
 
         inMemorySpeicherung.addGeotag(geoTagName, latitude, longitude, hashtag);
-    }
-    res.send('POST request to homepage')
+    };
+    res.send('POST request to homepage');
 
     res.render('gta', {
         taglist: []
