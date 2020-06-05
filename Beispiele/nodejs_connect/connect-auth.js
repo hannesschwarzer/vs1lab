@@ -1,7 +1,7 @@
 var connect = require('connect');
 
-var serveStatic = require('serve-static'),
-    serve = serveStatic('./static');
+var serveStatic = require('serve-public'),
+    serve = serveStatic('./public');
 
 connect()
     .use(logger)

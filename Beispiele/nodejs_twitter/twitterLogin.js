@@ -25,7 +25,7 @@ var cookies = require("cookie-parser");
 var sessions = require('express-session');
 
 var app = express();
-app.use(express.static(__dirname + "/static"));
+app.use(express.static(__dirname + "/public"));
 app.use(cookies(credentials.cookieSecret));
 app.use(sessions(credentials.cookieSecret));
 app.use(passport.initialize());
