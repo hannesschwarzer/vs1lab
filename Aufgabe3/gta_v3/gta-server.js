@@ -59,7 +59,7 @@ var geoTagListElements = [];
 
 var inMemorySpeicherung = (function () {
     var geoTagListReturnItems = [];
-    var types = [longitude, latitude, geoTagName, hashtag];
+    var types = [name, longitude, latitude, hashtag];
     var returnArray;
 
     return {
@@ -155,7 +155,7 @@ app.get('/', function (req, res) {
 // TODO: CODE ERGÄNZEN START
 app.post('/tagging', function (req, res) {
 
-    Content-Type: plain/text;
+    res.setHeader('Content-Type', 'text/plain');
 
     console.log(req.body);
     var addGeotagVariable = function (reqBody) {
