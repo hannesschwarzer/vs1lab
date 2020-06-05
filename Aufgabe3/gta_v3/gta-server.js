@@ -31,12 +31,17 @@ app.set('view engine', 'ejs');
 
 app.use(express.static(__dirname + "/public"));
 
-
 /**
  * Konstruktor für GeoTag Objekte.
  * GeoTag Objekte sollen min. alle Felder des 'tag-form' Formulars aufnehmen.
  */
 
+function GeoTag(laititude, longitude, name, hashtag) {
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.name = name;
+    this.hashtag = hashtag;
+};
 
 /**
  * Modul für 'In-Memory'-Speicherung von GeoTags mit folgenden Komponenten:
@@ -49,6 +54,76 @@ app.use(express.static(__dirname + "/public"));
 
 // TODO: CODE ERGÄNZEN
 
+    //need to be initialized
+var geoTagListElements = [];
+
+var inMemorySpeicherung = (function () {
+    var geoTagListReturnItems = [];
+    var types = [longitude, latitude, geoTagName, hashtag];
+    var returnArray;
+
+    return {
+        radiusSearch: function (radius) {
+            var longitude = document.getElementById("longitude").value;
+            var latitude = document.getElementById("latitude").value;
+
+            var listCoordinates = geoTagListElements.forEach(function () {
+                if (longitude) {
+                }
+            })
+
+            // show Results for longitude + radius or latitude + radius;
+
+            returnArray = geoTagListReturnItems;
+        },
+
+        //hier
+        searchForGeotag: function (searchterm) {
+
+            geoTagListElements.forEach(function () {
+                types.forEach(function () {
+                    if (this === searchterm
+                        && geoTagListReturnItems.indexOf(searchterm) === -1) {
+                        geoTagListReturnItems.push(this);
+                    }
+                })
+            })
+            returnArray = geoTagListReturnItems;
+        },
+
+        addGeotag: function (name, latitude, longitude, hashtag) {
+
+            var newGeotag = new GeoTag(latitude, longitude, name, hashtag);
+            geoTagListElements.push(newGeotag);
+
+            returnArray = geoTagListElements;
+        },
+
+        //hier
+        deleteGeotag: function (name, latitude, longitude, hashtag) {
+
+            // var geoTagToDelete = new GeoTag(latitude, longitude, name, hashtag);
+            // var positionGeoTagToDelete = geoTagListElements.indexOf(geoTagToDelete);
+            // geoTagListElements.splice(positionGeoTagToDelete, positionGeoTagToDelete);
+            for (geoTagElement in geoTagListElements) {
+                if (geoTagElement.name == name && geoTagElement.latitude == latitude && geoTagElement.longitude == longitude && geoTagElement.hashtag == hashtag) {
+                    var positionGeoTagToDelete = geoTagListElements.indexOf(geoTagElement);
+                    geoTagListElements.splice(positionGeoTagToDelete, positionGeoTagToDelete);
+                }
+            }
+
+            returnArray = geoTagListElements;
+        },
+
+        returnFunc: function () {
+            return returnArray;
+        }
+
+    }
+
+})();
+
+
 /**
  * Route mit Pfad '/' für HTTP 'GET' Requests.
  * (http://expressjs.com/de/4x/api.html#app.get.method)
@@ -58,7 +133,7 @@ app.use(express.static(__dirname + "/public"));
  * Als Response wird das ejs-Template ohne Geo Tag Objekte gerendert.
  */
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.render('gta', {
         taglist: []
     });
@@ -78,6 +153,21 @@ app.get('/', function(req, res) {
  */
 
 // TODO: CODE ERGÄNZEN START
+app.post('/tagging', function (req, res) {
+
+    Content-Type: plain/text;
+
+    console.log(req.body);
+    var addGeotagVariable = function (reqBody) {
+
+        inMemorySpeicherung.addGeotag(geoTagName, latitude, longitude, hashtag);
+    }
+    res.send('POST request to homepage')
+
+    res.render('gta', {
+        taglist: []
+    });
+});
 
 /**
  * Route mit Pfad '/discovery' für HTTP 'POST' Requests.
