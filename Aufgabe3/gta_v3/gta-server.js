@@ -55,11 +55,10 @@ function GeoTag(laititude, longitude, name, hashtag) {
 // TODO: CODE ERGÄNZEN
 
     //need to be initialized
-var geoTagListElements = [];
+var geoTagListElements = document.querySelectorAll('#results > li');
 
 var inMemorySpeicherung = (function () {
     var geoTagListReturnItems = [];
-    // var types = [longitude, latitude, geoTagName, hashtag];
     var returnArray;
 
     return {
@@ -77,16 +76,13 @@ var inMemorySpeicherung = (function () {
             returnArray = geoTagListReturnItems;
         },
 
-        //hier
         searchForGeotag: function (searchterm) {
 
             geoTagListElements.forEach(function () {
-                types.forEach(function () {
-                    if (this === searchterm
+                    if (this.innerHTML.includes(searchterm)
                         && geoTagListReturnItems.indexOf(searchterm) === -1) {
                         geoTagListReturnItems.push(this);
                     }
-                });
             });
             returnArray = geoTagListReturnItems;
         },
