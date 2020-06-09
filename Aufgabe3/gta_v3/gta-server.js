@@ -150,7 +150,7 @@ app.get('/', function (req, res) {
 // TODO: CODE ERGÄNZEN START
 app.post('/tagging', function (req, res) {
 
-    http.contentType = plain / text;
+    http.contentType = text/html;
 
     console.log(req.body);
     var addGeotagVariable = function (reqBody) {
