@@ -102,6 +102,7 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         }
 
         var tagList = "&pois=You," + lat + "," + lon;
+
         if (tags !== undefined) tags.forEach(function(tag) {
             tagList += "|" + tag.name + "," + tag.latitude + "," + tag.longitude;
         });
@@ -121,16 +122,23 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
 
         updateLocation: function() {
 
-            tryLocate(function (pos) {
-                document.getElementById("latitude").value = getLatitude(pos);
-                document.getElementById("longitude").value = getLongitude(pos);
-                document.getElementById("latitude_search").value = getLatitude(pos);
-                document.getElementById("longitude_search").value = getLongitude(pos);
-                var mapURL = getLocationMapSrc(getLatitude(pos), getLongitude(pos),[],16);
-                document.getElementById("result-img").src=mapURL;
-            }, function (alertString) {
-                alert(alertString);
-            });
+            if(document.getElementById("latitude").value === null && document.getElementById("longitude").value === null) {
+                tryLocate(function (pos) {
+
+                    document.getElementById("latitude").value = getLatitude(pos);
+                    document.getElementById("longitude").value = getLongitude(pos);
+                    document.getElementById("latitude_search").value = getLatitude(pos);
+                    document.getElementById("longitude_search").value = getLongitude(pos);
+
+                    var arrayWithTags = JSON.parse(document.getElementById("result-img").getAttribute("data-tags"));
+                    var mapURL = getLocationMapSrc(getLatitude(pos), getLongitude(pos), arrayWithTags, 16);
+                    document.getElementById("result-img").src = mapURL;
+                }, function (alertString) {
+                    alert(alertString);
+                });
+            }
+            else{}
+
         }
 
     }; // ... Ende öffentlicher Teil
