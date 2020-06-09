@@ -55,11 +55,10 @@ function GeoTag(laititude, longitude, name, hashtag) {
 // TODO: CODE ERGÄNZEN
 
     //need to be initialized
-var geoTagListElements = [];
+var geoTagListElements = document.querySelectorAll('#results > li');
 
 var inMemorySpeicherung = (function () {
     var geoTagListReturnItems = [];
-    // var types = [longitude, latitude, geoTagName, hashtag];
     var returnArray;
 
     return {
@@ -77,17 +76,13 @@ var inMemorySpeicherung = (function () {
             returnArray = geoTagListReturnItems;
         },
 
-        //hier
         searchForGeotag: function (searchterm) {
 
             geoTagListElements.forEach(function () {
-
-                types.forEach(function () {
-                    if (this === searchterm
-                        && geoTagListReturnItems.indexOf(searchterm) === -1) {
-                        geoTagListReturnItems.push(this);
-                    }
-                });
+                if (this.innerHTML.includes(searchterm)
+                    && geoTagListReturnItems.indexOf(searchterm) === -1) {
+                    geoTagListReturnItems.push(this);
+                }
             });
             returnArray = geoTagListReturnItems;
         },
@@ -105,8 +100,8 @@ var inMemorySpeicherung = (function () {
             // var geoTagToDelete = new GeoTag(latitude, longitude, name, hashtag);
             // var positionGeoTagToDelete = geoTagListElements.indexOf(geoTagToDelete);
             // geoTagListElements.splice(positionGeoTagToDelete, positionGeoTagToDelete);
-            for (geoTagElement in geoTagListElements) {
-                if (geoTagElement.name == name && geoTagElement.latitude == latitude && geoTagElement.longitude == longitude && geoTagElement.hashtag == hashtag) {
+            for (let geoTagElement in geoTagListElements) {
+                if (geoTagElement.name === name && geoTagElement.latitude === latitude && geoTagElement.longitude === longitude && geoTagElement.hashtag === hashtag) {
                     var positionGeoTagToDelete = geoTagListElements.indexOf(geoTagElement);
                     geoTagListElements.splice(positionGeoTagToDelete, positionGeoTagToDelete);
                 }
@@ -155,7 +150,7 @@ app.get('/', function (req, res) {
 // TODO: CODE ERGÄNZEN START
 app.post('/tagging', function (req, res) {
 
-    http.contentType = plain/text;
+    http.contentType = plain / text;
 
     console.log(req.body);
     var addGeotagVariable = function (reqBody) {
