@@ -81,6 +81,7 @@ var inMemorySpeicherung = (function () {
         searchForGeotag: function (searchterm) {
 
             geoTagListElements.forEach(function () {
+
                 types.forEach(function () {
                     if (this === searchterm
                         && geoTagListReturnItems.indexOf(searchterm) === -1) {
