@@ -55,16 +55,12 @@ function GeoTag(laititude, longitude, name, hashtag) {
 // TODO: CODE ERGÄNZEN
 
     //need to be initialized
-var geoTagListElements = document.querySelectorAll('#results > li');
-
 var inMemorySpeicherung = (function () {
     var geoTagListReturnItems = [];
     var returnArray;
 
     return {
-        radiusSearch: function (radius) {
-            var longitude = document.getElementById("longitude").value;
-            var latitude = document.getElementById("latitude").value;
+        radiusSearch: function (radius, latitude, longitude) {
 
             var listCoordinates = geoTagListElements.forEach(function () {
                 if (longitude) {
@@ -73,18 +69,18 @@ var inMemorySpeicherung = (function () {
 
             // show Results for longitude + radius or latitude + radius;
 
-            returnArray = geoTagListReturnItems;
+            return geoTagListReturnItems;
         },
 
         searchForGeotag: function (searchterm) {
 
             geoTagListElements.forEach(function () {
                     if (this.innerHTML.includes(searchterm)
-                        && geoTagListReturnItems.indexOf(searchterm) === -1) {
+                        && geoTagListReturnItems.forEach(this.indexOf(searchterm) === -1)) {
                         geoTagListReturnItems.push(this);
                     }
             });
-            returnArray = geoTagListReturnItems;
+            return geoTagListReturnItems;
         },
 
         addGeotag: function (name, latitude, longitude, hashtag) {
@@ -92,7 +88,7 @@ var inMemorySpeicherung = (function () {
             var newGeotag = new GeoTag(latitude, longitude, name, hashtag);
             geoTagListElements.push(newGeotag);
 
-            returnArray = geoTagListElements;
+            return geoTagListElements;
         },
 
         deleteGeotag: function (name, latitude, longitude, hashtag) {
@@ -107,12 +103,9 @@ var inMemorySpeicherung = (function () {
                 }
             }
 
-            returnArray = geoTagListElements;
+            return geoTagListElements;
         },
 
-        returnFunc: function () {
-            return returnArray;
-        }
 
     };
 
@@ -150,17 +143,20 @@ app.get('/', function (req, res) {
 // TODO: CODE ERGÄNZEN START
 app.post('/tagging', function (req, res) {
 
-    http.contentType = plain/text;
+    http.contentType = text/plain;
 
     console.log(req.body);
-    var addGeotagVariable = function (reqBody) {
+    var latitude = req.body.latitude;
+    var longitude = req.body.longitude;
+    var name = req.body.name;
+    var hashtag = req.body.hashtag;
 
-        inMemorySpeicherung.addGeotag(geoTagName, latitude, longitude, hashtag);
-    };
+    inMemorySpeicherung.addGeotag(name, latitude, longitude, hashtag);
+
     res.send('POST request to homepage');
 
     res.render('gta', {
-        taglist: []
+        taglist: inMemorySpeicherung.radiusSearch(radius, longitude, latitude, name)
     });
 });
 
@@ -177,6 +173,28 @@ app.post('/tagging', function (req, res) {
  */
 
 // TODO: CODE ERGÄNZEN
+app.post('/discovery', function (req, res) {
+
+    http.contentType = plain / text;
+
+    console.log(req.body);
+
+    var searchterm = req.body.searchTerm;
+
+    res.send('POST request to homepage');
+
+    if(searchterm === -1){
+        res.render('gta', {
+            taglist: inMemorySpeicherung.radiusSearch(radius, latitude, longitude)
+        });
+    }
+    else{
+        res.render('gta', {
+            taglist: inMemorySpeicherung.searchForGeotag(searchterm)
+        });
+    }
+
+});
 
 /**
  * Setze Port und speichere in Express.
