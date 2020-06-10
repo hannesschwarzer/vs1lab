@@ -52,8 +52,6 @@ function GeoTag(laititude, longitude, name, hashtag) {
  * - Funktion zum Löschen eines Geo Tags.
  */
 
-// TODO: CODE ERGÄNZEN
-
     //need to be initialized
 var inMemorySpeicherung = (function () {
     var geoTagListReturnItems = [];
@@ -172,7 +170,6 @@ app.post('/tagging', function (req, res) {
  * Falls 'term' vorhanden ist, wird nach Suchwort gefiltert.
  */
 
-// TODO: CODE ERGÄNZEN
 app.post('/discovery', function (req, res) {
 
     http.contentType = plain / text;
