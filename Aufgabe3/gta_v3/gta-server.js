@@ -55,53 +55,55 @@ function GeoTag(laititude, longitude, name, hashtag) {
     //need to be initialized
 var inMemorySpeicherung = (function () {
     var geoTagListReturnItems = [];
-    var returnArray;
 
     return {
-        radiusSearch: function (radius, latitude, longitude) {
+        radiusSearch: function (radius, latitude, longitude, taglist) {
 
-            var listCoordinates = geoTagListElements.forEach(function () {
-                if (longitude) {
+            taglist.forEach(function(){
+                var distanceLongitude = longitude - this.longitude;
+                var distanceLatitude = latitude - this.latitude;
+                var distance = Math.sqrt(distanceLatitude * distanceLatitude + distanceLongitude * distanceLongitude)
+
+                if (distance <= radius){
+                    geoTagListReturnItems.push(this);
                 }
-            });
-
-            // show Results for longitude + radius or latitude + radius;
+            })
 
             return geoTagListReturnItems;
         },
 
-        searchForGeotag: function (searchterm) {
+        searchForGeotag: function (searchterm, taglist) {
 
-            geoTagListElements.forEach(function () {
-                    if (this.innerHTML.includes(searchterm)
-                        && geoTagListReturnItems.forEach(this.indexOf(searchterm) === -1)) {
-                        geoTagListReturnItems.push(this);
-                    }
+            taglist.forEach(function () {
+                if(this.name === searchterm || this.latitude === searchterm || this.longitude === searchterm
+                    || this.hashtag === hashtag){
+                    geoTagListReturnItems.push(this);
+            }
             });
+
             return geoTagListReturnItems;
         },
 
-        addGeotag: function (name, latitude, longitude, hashtag) {
+        addGeotag: function (name, latitude, longitude, hashtag, taglist) {
 
             var newGeotag = new GeoTag(latitude, longitude, name, hashtag);
-            geoTagListElements.push(newGeotag);
+            taglist.push(newGeotag);
 
-            return geoTagListElements;
+            return taglist;
         },
 
-        deleteGeotag: function (name, latitude, longitude, hashtag) {
+        deleteGeotag: function (name, latitude, longitude, hashtag, taglist) {
 
-            // var geoTagToDelete = new GeoTag(latitude, longitude, name, hashtag);
-            // var positionGeoTagToDelete = geoTagListElements.indexOf(geoTagToDelete);
-            // geoTagListElements.splice(positionGeoTagToDelete, positionGeoTagToDelete);
-            for (geoTagElement in geoTagListElements) {
-                if (geoTagElement.name == name && geoTagElement.latitude == latitude && geoTagElement.longitude == longitude && geoTagElement.hashtag == hashtag) {
-                    var positionGeoTagToDelete = geoTagListElements.indexOf(geoTagElement);
-                    geoTagListElements.splice(positionGeoTagToDelete, positionGeoTagToDelete);
+            taglist.forEach(function () {
+                if(this.name === searchterm && this.latitude === searchterm && this.longitude === searchterm
+                    && this.hashtag === hashtag){
+                    var positionGeoTagToDelete = taglist.indexOf(this);
+                    taglist.splice(positionGeoTagToDelete, positionGeoTagToDelete);
                 }
-            }
 
-            return geoTagListElements;
+            })
+
+            return taglist;
         },
 
 
@@ -149,7 +151,7 @@ app.post('/tagging', function (req, res) {
     var name = req.body.name;
     var hashtag = req.body.hashtag;
 
-    inMemorySpeicherung.addGeotag(name, latitude, longitude, hashtag);
+    inMemorySpeicherung.addGeotag(name, latitude, longitude, hashtag, taglist);
 
     res.send('POST request to homepage');
 
@@ -177,17 +179,18 @@ app.post('/discovery', function (req, res) {
     console.log(req.body);
 
     var searchterm = req.body.searchTerm;
+    var taglist = req.body.taglist;
 
     res.send('POST request to homepage');
 
     if(searchterm === -1){
         res.render('gta', {
-            taglist: inMemorySpeicherung.radiusSearch(radius, latitude, longitude)
+            taglist: inMemorySpeicherung.radiusSearch(radius, latitude, longitude, taglist)
         });
     }
     else{
         res.render('gta', {
-            taglist: inMemorySpeicherung.searchForGeotag(searchterm)
+            taglist: inMemorySpeicherung.searchForGeotag(searchterm, taglist)
         });
     }
 
