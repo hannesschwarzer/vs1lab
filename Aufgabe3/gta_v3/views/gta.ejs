@@ -64,9 +64,9 @@
 				<legend>
 					Filter by Searchterm
 				</legend>
-				<input id="searchTerm" name="search term" type="text" placeholder="search term">
-				<input type="hidden" id="longitude_search">
-				<input type="hidden" id="latitude_search">
+				<input name="searchTerm" type="text" placeholder="search term">
+				<input type="hidden" id="longitude_search" value="<%= pos.longitude %>">
+				<input type="hidden" id="latitude_search" value="<%= pos.latitude %>">
 				<input type="submit" value="apply">
 
 			</fieldset>
@@ -82,7 +82,7 @@
 			</div>
 
 			<div class="tagmap">
-				<img id="result-img" src="./images/mapview.jpg" alt="a map with locations" data-tags=JSON.stringify(taglist) />
+				<img id="result-img" src="./images/mapview.jpg" alt="a map with locations" data-tags="<%= JSON.stringify(taglist) %>" />
 				<div class="caption">Result map</div>
 			</div>
 		</div>

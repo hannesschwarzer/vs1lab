@@ -122,7 +122,7 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
 
         updateLocation: function() {
 
-            if(document.getElementById("latitude").value === null && document.getElementById("longitude").value === null) {
+            if(document.getElementById("latitude").value === "" && document.getElementById("longitude").value === "") {
                 tryLocate(function (pos) {
 
                     document.getElementById("latitude").value = getLatitude(pos);
@@ -137,7 +137,11 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                     alert(alertString);
                 });
             }
-            else{}
+            else{
+                var arrayWithTags = JSON.parse(document.getElementById("result-img").getAttribute("data-tags"));
+                var mapURL = getLocationMapSrc(document.getElementById("latitude_search").value, document.getElementById("longitude_search").value, arrayWithTags, 16);
+                document.getElementById("result-img").src = mapURL;
+            }
 
         }
 
