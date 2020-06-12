@@ -36,7 +36,7 @@ app.use(express.static(__dirname + "/public"));
  * GeoTag Objekte sollen min. alle Felder des 'tag-form' Formulars aufnehmen.
  */
 
-function GeoTag(laititude, longitude, name, hashtag) {
+function GeoTag(latitude, longitude, name, hashtag) {
     this.latitude = latitude;
     this.longitude = longitude;
     this.name = name;
@@ -78,7 +78,7 @@ var inMemorySpeicherung = (function () {
 
             taglist.forEach(function () {
                 if(this.name === searchterm || this.latitude === searchterm || this.longitude === searchterm
-                    || this.hashtag === hashtag){
+                    || this.hashtag === searchterm){
                     geoTagListReturnItems.push(this);
             }
             });
@@ -89,15 +89,15 @@ var inMemorySpeicherung = (function () {
         addGeotag: function (name, latitude, longitude, hashtag, taglist) {
 
             var newGeotag = new GeoTag(latitude, longitude, name, hashtag);
-            taglist.push(newGeotag);
+            geoTagListReturnItems.push(newGeotag);
 
-            return taglist;
+            return geoTagListReturnItems;
         },
 
         deleteGeotag: function (name, latitude, longitude, hashtag, taglist) {
 
             taglist.forEach(function () {
-                if(this.name === searchterm && this.latitude === searchterm && this.longitude === searchterm
+                if(this.name === name && this.latitude === latitude && this.longitude === longitude
                     && this.hashtag === hashtag){
                     var positionGeoTagToDelete = taglist.indexOf(this);
                     taglist.splice(positionGeoTagToDelete, positionGeoTagToDelete);
@@ -145,20 +145,19 @@ app.get('/', function (req, res) {
 // TODO: CODE ERGÄNZEN START
 app.post('/tagging', function (req, res) {
 
-    http.contentType = text/plain;
+    res.set('Content-Type', 'text/html')
 
     console.log(req.body);
     var latitude = req.body.latitude;
     var longitude = req.body.longitude;
     var name = req.body.name;
     var hashtag = req.body.hashtag;
-
-    inMemorySpeicherung.addGeotag(name, latitude, longitude, hashtag, taglist);
+    var taglist = req.body.taglist;
 
     res.send('POST request to homepage');
 
     res.render('gta', {
-        taglist: inMemorySpeicherung.radiusSearch(radius, longitude, latitude, name)
+        taglist: inMemorySpeicherung.addGeotag(name, latitude, longitude, hashtag, taglist)
     });
 });
 
@@ -177,7 +176,7 @@ app.post('/tagging', function (req, res) {
 // TODO: CODE ERGÄNZEN
 app.post('/discovery', function (req, res) {
 
-    http.contentType = plain / text;
+    res.set('Content-Type', 'text/html')
 
     console.log(req.body);
 
