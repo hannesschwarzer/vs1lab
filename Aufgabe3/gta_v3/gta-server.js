@@ -174,7 +174,8 @@ app.post('/tagging', function (req, res) {
 
 app.post('/discovery', function (req, res) {
 
-    http.contentType = plain / text;
+    http.contentType = text/plain;
+
 
     console.log(req.body);
 
