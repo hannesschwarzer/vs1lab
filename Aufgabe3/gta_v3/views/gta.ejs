@@ -33,11 +33,19 @@
 				<div class="tag_form">
 					<label>
 						latitude
-						<input id="latitude" type="number" step="any" name="latitude" placeholder="49.01379" required>
+						<input id="latitude" type="number" step="any" name="latitude" placeholder="49.01379" required
+								<%if(locals.latitudeUsr) {%>
+							   		value="<%=latitudeUsr%>"
+								<%};%>
+						/>
 					</label>
 					<label>
 						longitude
-						<input id="longitude" type="number" step="any" name="longitude" placeholder="8.390071" required>
+						<input id="longitude" type="number" step="any" name="longitude" placeholder="8.390071" required
+								<%if(locals.longitudeUsr) {%>
+							   value="<%=longitudeUsr%>"
+								<%};%>
+						/>
 					</label>
 					<label>
 						name
@@ -65,8 +73,16 @@
 					Filter by Searchterm
 				</legend>
 				<input name="searchTerm" type="text" placeholder="search term">
-				<input type="hidden" id="longitude_search" value="<%= pos.longitude %>">
-				<input type="hidden" id="latitude_search" value="<%= pos.latitude %>">
+				<input type="hidden" id="longitude_search"
+						<%if(locals.longitudeUsr) {%>
+					   		value="<%=longitudeUsr%>"
+						<%};%>
+				/>
+				<input type="hidden" id="latitude_search"
+						<%if(locals.latitudeUsr) {%>
+					   		value="<%=latitudeUsr%>"
+						<%};%>
+				/>
 				<input type="submit" value="apply">
 
 			</fieldset>
