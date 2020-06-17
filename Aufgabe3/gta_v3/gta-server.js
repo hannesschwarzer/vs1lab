@@ -56,55 +56,48 @@ function GeoTag(latitude, longitude, name, hashtag) {
 
     //need to be initialized
 var inMemorySpeicherung = (function () {
-    var geoTagListReturnItems = [];
+    var geoTagArray = [];
 
     return {
-        radiusSearch: function (latitude, longitude, taglist) {
+        radiusSearch: function (latitude, longitude) {
 
             var radius = 10;
 
-            taglist.forEach(function(){
+            return geoTagArray.filter(()=>{
                 var distanceLongitude = longitude - this.longitude;
                 var distanceLatitude = latitude - this.latitude;
                 var distance = Math.sqrt(distanceLatitude * distanceLatitude + distanceLongitude * distanceLongitude)
 
-                if (distance <= radius){
-                    geoTagListReturnItems.push(this);
-                }
+                return distance <= radius;
             })
-            return geoTagListReturnItems;
         },
 
-        searchForGeotag: function (searchterm, taglist) {
+        searchForGeotag: function (searchterm) {
 
-            return taglist.filter(function (tag) {
+            return geoTagArray.filter(function (tag) {
                 return tag.hashtag.indexOf(searchterm) > -1 || tag.name.indexOf(searchterm) > -1 || tag.latitude.indexOf(searchterm) > -1 || tag.longitude.indexOf(searchterm) > -1;
             });
 
         },
 
-        taglist: geoTagListReturnItems,
-
-        addGeotag: function (name, latitude, longitude, hashtag, taglist) {
+        addGeotag: function (name, latitude, longitude, hashtag) {
 
             var newGeotag = new GeoTag(latitude, longitude, name, hashtag);
-            geoTagListReturnItems.push(newGeotag);
-
-            return geoTagListReturnItems;
+            geoTagArray.push(newGeotag);
         },
 
-        deleteGeotag: function (name, latitude, longitude, hashtag, taglist) {
+        deleteGeotag: function (name, latitude, longitude, hashtag) {
 
-            taglist.forEach(function () {
+            geoTagArray.forEach(function () {
                 if(this.name === name && this.latitude === latitude && this.longitude === longitude
                     && this.hashtag === hashtag){
-                    var positionGeoTagToDelete = taglist.indexOf(this);
-                    taglist.splice(positionGeoTagToDelete, positionGeoTagToDelete);
+                    var positionGeoTagToDelete = geoTagArray.indexOf(this);
+                    geoTagArray.splice(positionGeoTagToDelete, positionGeoTagToDelete);
                 }
 
             })
 
-            return taglist;
+            return geoTagArray;
         },
 
 
@@ -147,16 +140,12 @@ app.post('/tagging', function (req, res) {
     res.set('Content-Type', 'text/html')
 
     console.log(req.body);
-    inMemorySpeicherung.addGeotag(req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag, req.body.taglist);
+    inMemorySpeicherung.addGeotag(req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag);
 
-
-    var serachArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude, inMemorySpeicherung.taglist);
-
-
-    //res.send('POST request to homepage');
+    var searchArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude);
 
     res.render('gta', {
-        taglist: serachArray,
+        taglist: searchArray,
         latitudeUsr: req.body.latitude,
         longitudeUsr: req.body.longitude
     });
@@ -186,13 +175,12 @@ app.post('/discovery', function (req, res) {
     var returnTags = [];
 
     // res.send('POST request to homepage');
-    console.log(inMemorySpeicherung.taglist);
 
     if(searchterm == ""){
-         var searchArray = inMemorySpeicherung.radiusSearch(radius, req.body.latitude, req.body.longitude, inMemorySpeicherung.taglist);
+         var searchArray = inMemorySpeicherung.radiusSearch(radius, req.body.latitude, req.body.longitude);
     }
     else{
-        var searchArray = inMemorySpeicherung.searchForGeotag(searchterm, inMemorySpeicherung.taglist);
+        var searchArray = inMemorySpeicherung.searchForGeotag(searchterm);
     }
 
     res.render('gta', {
