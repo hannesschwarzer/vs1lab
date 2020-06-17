@@ -61,15 +61,19 @@ var inMemorySpeicherung = (function () {
     return {
         radiusSearch: function (latitude, longitude) {
 
+            var returnArray = [];
             var radius = 10;
 
-            return geoTagArray.filter(()=>{
-                var distanceLongitude = longitude - this.longitude;
-                var distanceLatitude = latitude - this.latitude;
+            geoTagArray.forEach(function(tag){
+                var distanceLongitude = longitude - tag.longitude;
+                var distanceLatitude = latitude - tag.latitude;
                 var distance = Math.sqrt(distanceLatitude * distanceLatitude + distanceLongitude * distanceLongitude)
 
-                return distance <= radius;
+                if (distance <= radius){
+                    returnArray.push(tag);
+                }
             })
+            return returnArray;
         },
 
         searchForGeotag: function (searchterm) {
@@ -117,7 +121,7 @@ var inMemorySpeicherung = (function () {
 
 app.get('/', function (req, res) {
     res.render('gta', {
-        taglist: inMemorySpeicherung.taglist,
+        taglist: [],
     });
 });
 
@@ -172,11 +176,8 @@ app.post('/discovery', function (req, res) {
 
     var searchterm = req.body.searchTerm;
     var radius = 10;
-    var returnTags = [];
 
-    // res.send('POST request to homepage');
-
-    if(searchterm == ""){
+    if(searchterm == undefined){
          var searchArray = inMemorySpeicherung.radiusSearch(radius, req.body.latitude, req.body.longitude);
     }
     else{
