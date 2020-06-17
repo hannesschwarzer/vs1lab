@@ -61,10 +61,19 @@ var inMemorySpeicherung = (function () {
     return {
         radiusSearch: function (latitude, longitude) {
 
-            var returnArray = [];
+
             var radius = 10;
 
-            geoTagArray.forEach(function(tag){
+            return geoTagArray.filter(function(tag){
+                var distanceLongitude = longitude - tag.longitude;
+                var distanceLatitude = latitude - tag.latitude;
+                var distance = Math.sqrt(distanceLatitude * distanceLatitude + distanceLongitude * distanceLongitude)
+                return distance <= radius;
+            })
+
+            // different way to write this function
+            // var returnArray = [];
+            /* geoTagArray.forEach(function(tag){
                 var distanceLongitude = longitude - tag.longitude;
                 var distanceLatitude = latitude - tag.latitude;
                 var distance = Math.sqrt(distanceLatitude * distanceLatitude + distanceLongitude * distanceLongitude)
@@ -73,7 +82,7 @@ var inMemorySpeicherung = (function () {
                     returnArray.push(tag);
                 }
             })
-            return returnArray;
+            return returnArray; */
         },
 
         searchForGeotag: function (searchterm) {
