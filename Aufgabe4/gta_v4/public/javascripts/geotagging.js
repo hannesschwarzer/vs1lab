@@ -143,8 +143,41 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                 document.getElementById("result-img").src = mapURL;
             }
 
-        }
+        },
+        eventListenerBlocker: function() {
+            var buttons = document.querySelectorAll("input[type='submit']");
+            buttons.forEach(function () {
+                addEventListener("click",function (event) {
+                    event.preventDefault();
+                })
+            })
 
+        },
+
+        ajaxCallTagging: function () {
+            document.getElementById("submit_tagging").addEventListener("click",function () {
+                var ajax = new XMLHttpRequest();
+
+                ajax.onreadystatechange = function() {
+
+                    if (this.readyState === 4 && this.status === 200) {
+                        var geoTagObject = new GeoTag(document.getElementById("latitude").value,
+                            document.getElementById("longitude").value,
+                            document.getElementById("name").value,
+                            document.getElementById("hashtag").value)
+
+                        const jsonString = JSON.stringify(geoTagObject)
+
+                        document.getElementById("results")
+                        ajax.open("POST", "/tagging", true);
+                        ajax.setRequestHeader("Content-type", "application/json");
+                        ajax.send(jsonString);
+
+
+                    }
+                };
+            })
+        }
     }; // ... Ende öffentlicher Teil
 })(GEOLOCATIONAPI);
 
@@ -155,4 +188,6 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
  */
 $(function() {
     gtaLocator.updateLocation();
+    gtaLocator.eventListenerBlocker();
+    gtaLocator.ajaxCallTagging();
 });
