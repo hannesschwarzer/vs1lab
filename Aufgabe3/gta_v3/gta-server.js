@@ -61,15 +61,28 @@ var inMemorySpeicherung = (function () {
     return {
         radiusSearch: function (latitude, longitude) {
 
+
             var radius = 10;
 
             return geoTagArray.filter(function(tag){
                 var distanceLongitude = longitude - tag.longitude;
                 var distanceLatitude = latitude - tag.latitude;
                 var distance = Math.sqrt(distanceLatitude * distanceLatitude + distanceLongitude * distanceLongitude)
-
                 return distance <= radius;
             })
+
+            // different way to write this function
+            // var returnArray = [];
+            /* geoTagArray.forEach(function(tag){
+                var distanceLongitude = longitude - tag.longitude;
+                var distanceLatitude = latitude - tag.latitude;
+                var distance = Math.sqrt(distanceLatitude * distanceLatitude + distanceLongitude * distanceLongitude)
+
+                if (distance <= radius){
+                    returnArray.push(tag);
+                }
+            })
+            return returnArray; */
         },
 
         searchForGeotag: function (searchterm) {
@@ -117,7 +130,7 @@ var inMemorySpeicherung = (function () {
 
 app.get('/', function (req, res) {
     res.render('gta', {
-        taglist: []
+        taglist: [],
     });
 });
 
@@ -172,19 +185,16 @@ app.post('/discovery', function (req, res) {
 
     var searchterm = req.body.searchTerm;
     var radius = 10;
-    var returnTags = [];
-
-    // res.send('POST request to homepage');
 
     if(searchterm == undefined){
-         returnTags = inMemorySpeicherung.radiusSearch(radius, req.body.latitude, req.body.longitude);
+         var searchArray = inMemorySpeicherung.radiusSearch(radius, req.body.latitude, req.body.longitude);
     }
     else{
-        returnTags = inMemorySpeicherung.searchForGeotag(searchterm);
+        var searchArray = inMemorySpeicherung.searchForGeotag(searchterm);
     }
 
     res.render('gta', {
-        taglist: returnTags,
+        taglist: searchArray,
         latitudeHidden: req.body.latitude_search,
         longitudeHidden: req.body.longitude_search
     });
