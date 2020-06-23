@@ -143,46 +143,72 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
             }
 
         },
-        // eventListenerBlocker: function() {
-        //     var buttons = document.querySelectorAll("input[type='submit']");
-        //     buttons.forEach(function () {
-        //         addEventListener("click",function (event) {
-        //         })
-        //     })
-        //
-        // },
+
+        preventer: function () {
+            document.querySelectorAll("[type='submit']").forEach(function () {
+                this.addEventListener("click", function (event) {
+                    event.preventDefault();
+                })
+            })
+        },
 
         ajaxCallTagging: function () {
-            document.getElementById("submit_tagging").addEventListener("click", function (event) {
-                event.preventDefault();
+            var submit = document.getElementById("submit_tagging")
+
+            submit.addEventListener("click", function () {
 
                 const ajax = new XMLHttpRequest();
 
                 ajax.open("POST", "/tagging", true);
+                ajax.setRequestHeader("Content-type", "application/json");
+
                 ajax.onreadystatechange = function () {
-
                     if (this.readyState === 4 && this.status === 200) {
-                        var geoTagObject = new GeoTag(document.getElementById("latitude").value,
-                            document.getElementById("longitude").value,
-                            document.getElementById("name").value,
-                            document.getElementById("hashtag").value)
-
-                        const jsonString = JSON.stringify(geoTagObject)
-
-                        ajax.setRequestHeader("Content-type", "application/json");
-                        ajax.send(jsonString);
-                        console.log(jsonString)
-
-                        var geoTagLi = document.createElement("li")
-                        var geoTagValue = document.createTextNode(geoTagObject.toString())
-                        geoTagLi.appendChild(geoTagValue)
-                        document.getElementById("results").appendChild(geoTagLi)
+                        var geoTagLi = document.createElement("li");
+                        var geoTagValue = document.createTextNode(ajax.responseText);
+                        geoTagLi.appendChild(geoTagValue);
+                        document.getElementById("results").appendChild(geoTagLi);
                     }
+
+                    const jsonString = JSON.stringify(new GeoTag(document.getElementById("latitude").value,
+                        document.getElementById("longitude").value,
+                        document.getElementById("name").value,
+                        document.getElementById("hashtag").value));
+                    ajax.send(jsonString);
+                    console.log(jsonString);
                 };
             })
+        },
+
+        ajaxCallFilter: function () {
+            var submit = document.getElementById("submit_discovery");
+
+            submit.addEventListener("click", function () {
+
+                var searchTerm = document.getElementById("searchTerm")
+
+                if (searchTerm !== undefined) {
+                    document.URL += "?searchTerm=" + searchTerm.toString()
+                }
+
+                const ajax = new XMLHttpRequest();
+
+                ajax.open("GET", "/discovery", true);
+                ajax.setRequestHeader("Content-type", "application/json");
+
+                ajax.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+
+                    }
+                }
+
+            })
         }
+
+
     }; // ... Ende öffentlicher Teil
-})(GEOLOCATIONAPI);
+})
+(GEOLOCATIONAPI);
 
 /**
  * $(function(){...}) wartet, bis die Seite komplett geladen wurde. Dann wird die
@@ -191,7 +217,7 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
  */
 $(function () {
     gtaLocator.updateLocation();
-    // gtaLocator.eventListenerBlocker();
+    gtaLocator.preventer()
     gtaLocator.ajaxCallTagging();
-
+    gtaLocator.ajaxCallFilter();
 });
