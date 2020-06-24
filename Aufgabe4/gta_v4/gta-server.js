@@ -147,8 +147,14 @@ app.post('/tagging', jsonParser, function (req, res) {
 
     var searchArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude);
 
-    res.set('Content-Type', 'application/json')
-    // res.json(JSON.stringify(searchArray));
+    // res.set('Content-Type', 'application/json')
+    res.send(
+        {
+            taglist: searchArray,
+            latitudeUsr: req.body.latitude,
+            longitudeUsr: req.body.longitude
+        }
+    )
 
 });
 

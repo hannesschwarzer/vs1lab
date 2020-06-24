@@ -152,6 +152,7 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                 if (ajax.readyState === ajax.DONE) {
                     if (ajax.status == 200) {
                         var geoTagsList = JSON.parse(ajax.responseText);
+                        console.log(ajax.responseText + "response")
                         var mapReload = getLocationMapSrc(geoTagsList.latitude, geoTagsList.longitude, geoTagsList.taglist, 16)
                         document.getElementById("results").innerHTML = geoTagsList
                         document.getElementById("result-img").src = mapReload;
@@ -169,6 +170,7 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
 
                     ajax.open("POST", "/tagging", true);
                     ajax.setRequestHeader("Content-type", "application/json");
+                    ajax.setRequestHeader("Data-Type","json");
 
                     class GeoTag2 {
                         constructor(latitude, longitude, name, hashTag) {
