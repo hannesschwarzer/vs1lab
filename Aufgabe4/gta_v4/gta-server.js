@@ -56,54 +56,54 @@ function GeoTag(latitude, longitude, name, hashtag) {
 
     //need to be initialized
 var inMemorySpeicherung = (function () {
-    var geoTagArray = [];
+        var geoTagArray = [];
 
-    return {
-        radiusSearch: function (latitude, longitude) {
+        return {
+            radiusSearch: function (latitude, longitude) {
 
-            var radius = 10;
+                var radius = 10;
 
-            return geoTagArray.filter(function(tag){
-                var distanceLongitude = longitude - tag.longitude;
-                var distanceLatitude = latitude - tag.latitude;
-                var distance = Math.sqrt(distanceLatitude * distanceLatitude + distanceLongitude * distanceLongitude)
+                return geoTagArray.filter(function (tag) {
+                    var distanceLongitude = longitude - tag.longitude;
+                    var distanceLatitude = latitude - tag.latitude;
+                    var distance = Math.sqrt(distanceLatitude * distanceLatitude + distanceLongitude * distanceLongitude)
 
-                return distance <= radius;
-            })
-        },
+                    return distance <= radius;
+                })
+            },
 
-        searchForGeotag: function (searchterm) {
+            searchForGeotag: function (searchterm) {
 
-            return geoTagArray.filter(function (tag) {
-                return tag.hashtag.indexOf(searchterm) > -1 || tag.name.indexOf(searchterm) > -1 || tag.latitude.indexOf(searchterm) > -1 || tag.longitude.indexOf(searchterm) > -1;
-            });
+                return geoTagArray.filter(function (tag) {
+                    return tag.hashtag.indexOf(searchterm) > -1 || tag.name.indexOf(searchterm) > -1 || tag.latitude.indexOf(searchterm) > -1 || tag.longitude.indexOf(searchterm) > -1;
+                });
 
-        },
+            },
 
-        addGeotag: function (name, latitude, longitude, hashtag) {
+            addGeotag: function (name, latitude, longitude, hashtag) {
 
-            var newGeotag = new GeoTag(latitude, longitude, name, hashtag);
-            geoTagArray.push(newGeotag);
-        },
+                var newGeotag = new GeoTag(latitude, longitude, name, hashtag);
+                geoTagArray.push(newGeotag);
+            },
 
-        deleteGeotag: function (name, latitude, longitude, hashtag) {
+            deleteGeotag: function (name, latitude, longitude, hashtag) {
 
-            geoTagArray.forEach(function () {
-                if(this.name === name && this.latitude === latitude && this.longitude === longitude
-                    && this.hashtag === hashtag){
-                    var positionGeoTagToDelete = geoTagArray.indexOf(this);
-                    geoTagArray.splice(positionGeoTagToDelete, positionGeoTagToDelete);
-                }
+                geoTagArray.forEach(function () {
+                    if (this.name === name && this.latitude === latitude && this.longitude === longitude
+                        && this.hashtag === hashtag) {
+                        var positionGeoTagToDelete = geoTagArray.indexOf(this);
+                        geoTagArray.splice(positionGeoTagToDelete, positionGeoTagToDelete);
+                    }
 
-            })
+                })
 
-            return geoTagArray;
-        },
+                return geoTagArray;
+            },
 
 
-    };
+        };
 
-})();
+    })();
 
 
 /**
@@ -134,21 +134,22 @@ app.get('/', function (req, res) {
  * Die Objekte liegen in einem Standard Radius um die Koordinate (lat, lon).
  */
 
+
+
 // TODO: CODE ERGÄNZEN START
-app.post('/tagging', function (req, res) {
 
-    res.set('Content-Type', 'text/html')
+var jsonParser = bodyParser.json();
 
-    console.log(req.body);
+app.post('/tagging', jsonParser, function (req, res) {
+    console.log(req.body)
+
     inMemorySpeicherung.addGeotag(req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag);
 
     var searchArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude);
 
-    res.render('gta', {
-        taglist: searchArray,
-        latitudeUsr: req.body.latitude,
-        longitudeUsr: req.body.longitude
-    });
+    res.set('Content-Type', 'application/json')
+    // res.json(JSON.stringify(searchArray));
+
 });
 
 /**
@@ -176,10 +177,9 @@ app.post('/discovery', function (req, res) {
 
     // res.send('POST request to homepage');
 
-    if(searchterm == undefined){
-         returnTags = inMemorySpeicherung.radiusSearch(radius, req.body.latitude, req.body.longitude);
-    }
-    else{
+    if (searchterm == undefined) {
+        returnTags = inMemorySpeicherung.radiusSearch(radius, req.body.latitude, req.body.longitude);
+    } else {
         returnTags = inMemorySpeicherung.searchForGeotag(searchterm);
     }
 
@@ -195,7 +195,7 @@ app.post('/discovery', function (req, res) {
 
         });
     }
-    else{
+     else{
         var searchArray = inMemorySpeicherung.searchForGeotag(searchterm, inMemorySpeicherung.taglist);
         res.render('gta', {
             taglist: searchArray,
