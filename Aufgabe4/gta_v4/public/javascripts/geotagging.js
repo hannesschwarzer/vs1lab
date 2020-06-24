@@ -152,9 +152,9 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                 if (ajax.readyState === ajax.DONE) {
                     if (ajax.status == 200) {
                         var geoTagsList = JSON.parse(ajax.responseText);
-                        console.log(ajax.responseText + "response")
-                        var mapReload = getLocationMapSrc(geoTagsList.latitude, geoTagsList.longitude, geoTagsList.taglist, 16)
-                        document.getElementById("results").innerHTML = geoTagsList
+                        console.log(ajax.responseText + "response");
+                        var mapReload = getLocationMapSrc(geoTagsList.latitude, geoTagsList.longitude, geoTagsList.taglist, 16);
+                        document.getElementById("results").innerHTML = geoTagsList;
                         document.getElementById("result-img").src = mapReload;
                     } else if (ajax.status == 400) {
                         alert('There was an 400 error');
@@ -170,7 +170,7 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
 
                     ajax.open("POST", "/tagging", true);
                     ajax.setRequestHeader("Content-type", "application/json");
-                    ajax.setRequestHeader("Data-Type","json");
+                    ajax.setRequestHeader("Data-Type", "json");
 
                     class GeoTag2 {
                         constructor(latitude, longitude, name, hashTag) {
@@ -194,26 +194,21 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         },
 
         ajaxCallFilter: function () {
+
+            var ajax = new XMLHttpRequest();
             var submit = document.getElementById("submit_discovery");
 
-            submit.addEventListener("click", function () {
-
-                var searchTerm = document.getElementById("searchTerm")
+            submit.addEventListener("click", function (event) {
+                event.preventDefault();
+                var searchTerm = document.getElementById("searchTerm");
 
                 if (searchTerm !== undefined) {
                     document.URL += "?searchTerm=" + searchTerm.toString()
                 }
 
-                const ajax = new XMLHttpRequest();
-
                 ajax.open("GET", "/discovery", true);
                 ajax.setRequestHeader("Content-type", "application/json");
 
-                ajax.onreadystatechange = function () {
-                    if (this.readyState === 4 && this.status === 200) {
-
-                    }
-                }
 
             })
         }
@@ -232,5 +227,5 @@ $(function () {
     gtaLocator.updateLocation();
     // gtaLocator.preventer()
     gtaLocator.ajaxCallTagging();
-    // gtaLocator.ajaxCallFilter();
+    gtaLocator.ajaxCallFilter();
 });
