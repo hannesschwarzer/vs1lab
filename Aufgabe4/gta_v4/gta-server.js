@@ -189,27 +189,20 @@ app.post('/discovery', function (req, res) {
         returnTags = inMemorySpeicherung.searchForGeotag(searchterm);
     }
 
-    res.render('gta', {
+    res.send('gta', {
         taglist: returnTags,
         latitudeHidden: req.body.latitude_search,
         longitudeHidden: req.body.longitude_search
     });
 
-    /**if(searchterm == ""){
-        res.render('gta', {
-            taglist: inMemorySpeicherung.radiusSearch(radius, req.body.latitude, req.body.longitude, inMemorySpeicherung.taglist),
-
-        });
-    }
-     else{
-        var searchArray = inMemorySpeicherung.searchForGeotag(searchterm, inMemorySpeicherung.taglist);
-        res.render('gta', {
-            taglist: searchArray,
-        });
-    }
-     */
-
 });
+
+app.get('geotags', (req, res) => {
+   res.send('Hello');
+});
+
+const geotagsRoute = require('./routes/geotags')
+app.use('/geotags', geotagsRoute);
 
 /**
  * Setze Port und speichere in Express.
