@@ -56,7 +56,7 @@
 						<input id="hashtag" type="text" name="hashtag" placeholder="# + max. 10 letters"
 							   pattern="^#[a-zA-Z]{1,10}">
 					</label>
-					<input type="submit" id="submit_tagging">
+					<input type="button" value="submit" id="submit_tagging">
 				</div>
 			</fieldset>
 		</form>
@@ -72,7 +72,7 @@
 				<legend>
 					Filter by Searchterm
 				</legend>
-				<input name="searchTerm" type="text" placeholder="search term">
+				<input name="searchTerm" id="discovery_searchterm" type="text" placeholder="search term">
 				<input type="hidden" id="longitude_search"
 						<%if(locals.longitudeUsr) {%>
 					   		value="<%=longitudeUsr%>"
@@ -83,7 +83,7 @@
 					   		value="<%=latitudeUsr%>"
 						<%};%>
 				/>
-				<input type="submit" value="apply" id="submit_discovery">
+				<input type="button" value="apply" id="submit_discovery">
 
 			</fieldset>
 		</form>

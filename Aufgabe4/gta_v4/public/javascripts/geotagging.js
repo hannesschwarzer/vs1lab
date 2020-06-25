@@ -36,6 +36,74 @@ GEOLOCATIONAPI = {
 /**
  * GeoTagApp Locator Modul
  */
+
+class GeoTag2 {
+    constructor(latitude, longitude, name, hashTag) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.name = name;
+        this.hashtag = hashTag;
+    }
+}
+
+var ajax = new XMLHttpRequest();
+
+
+// TODO: Fix error when sending a geotag-post
+//  Fix functionality for discovery
+
+ajax.onreadystatechange = function () {
+    if (ajax.readyState === ajax.DONE) {
+        if (ajax.status == 200) {
+            var geoTagsList = JSON.parse(ajax.responseText);
+            gtaLocator.updateLocation();
+            var htmlString = '';
+
+            geoTagsList.forEach(function (data) {
+                htmlString +=
+                    "<li> " + data.name + "  (" + data.latitude + ", " + data.longitude + ") " + data.hashtag + " </li>";
+            })
+            document.getElementById("results").innerHTML = htmlString;
+
+        } else if (ajax.status == 400) {
+            alert('There was an 400 error');
+        } else {
+            alert('Something else other than 200 was returned')
+        }
+    }
+}
+
+var submit = document.getElementById("submit_tagging");
+submit.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    ajax.open("POST", "/tagging", true);
+    ajax.setRequestHeader("Content-type", "application/json");
+    ajax.setRequestHeader("Data-Type", "json");
+
+    var newGeoTag = new GeoTag2(document.getElementById("latitude").value,
+        document.getElementById("longitude").value,
+        document.getElementById("name").value,
+        document.getElementById("hashtag").value);
+
+    var jsonString = JSON.stringify(newGeoTag);
+    ajax.send(jsonString);
+    console.log(jsonString);
+})
+
+var discovery = document.getElementById("submit_discovery");
+discovery.addEventListener("click", function (event) {
+
+    var searchTerm = document.getElementById("discovery_searchterm").value;
+    var latitudeToSend = document.getElementById("latitude_search").value;
+    var longitudeToSend = document.getElementById("longitude_search").value;
+    ajax.open('GET',
+        '/discovery?searchterm=' + searchTerm + '&latitude=' + latitudeToSend + '&longitude=' + longitudeToSend);
+    ajax.setRequestHeader("Content-type", "application/json");
+    ajax.setRequestHeader("Data-Type", "json");
+    ajax.send();
+})
+
 var gtaLocator = (function GtaLocator(geoLocationApi) {
 
     // Private Member
@@ -114,6 +182,8 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         return urlString;
     };
 
+
+
     return { // Start öffentlicher Teil des Moduls ...
 
         // Public Member
@@ -142,55 +212,6 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                 document.getElementById("result-img").src = mapURL;
             }
 
-        },
-
-        ajaxCallTagging: function () {
-
-            var ajax = new XMLHttpRequest();
-
-            ajax.onreadystatechange = function () {
-                if (ajax.readyState === ajax.DONE) {
-                    if (ajax.status == 200) {
-                        var geoTagsList = JSON.parse(ajax.responseText);
-                        console.log(ajax.responseText + "response");
-                        var mapReload = getLocationMapSrc(geoTagsList.latitude, geoTagsList.longitude, geoTagsList.taglist, 16);
-                        document.getElementById("results").innerHTML = geoTagsList;
-                        document.getElementById("result-img").src = mapReload;
-                    } else if (ajax.status == 400) {
-                        alert('There was an 400 error');
-                    } else {
-                        alert('Something else other than 200 was returned')
-                    }
-                }
-
-                var submit = document.getElementById("submit_tagging");
-
-                submit.addEventListener("click", function (event) {
-                    event.preventDefault();
-
-                    ajax.open("POST", "/tagging", true);
-                    ajax.setRequestHeader("Content-type", "application/json");
-                    ajax.setRequestHeader("Data-Type", "json");
-
-                    class GeoTag2 {
-                        constructor(latitude, longitude, name, hashTag) {
-                            this.latitude = latitude;
-                            this.longitude = longitude;
-                            this.name = name;
-                            this.hashtag = hashTag;
-                        }
-                    }
-
-                    var newGeoTag = new GeoTag2(document.getElementById("latitude").value,
-                        document.getElementById("longitude").value,
-                        document.getElementById("name").value,
-                        document.getElementById("hashtag").value);
-
-                    var jsonString = JSON.stringify(newGeoTag);
-                    ajax.send(jsonString);
-                    console.log(jsonString);
-                })
-            }
         },
 
         ajaxCallFilter: function () {
@@ -225,7 +246,4 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
  */
 $(function () {
     gtaLocator.updateLocation();
-    // gtaLocator.preventer()
-    gtaLocator.ajaxCallTagging();
-    gtaLocator.ajaxCallFilter();
 });

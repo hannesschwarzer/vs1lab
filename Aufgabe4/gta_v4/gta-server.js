@@ -36,7 +36,8 @@ app.use(express.static(__dirname + "/public"));
  * GeoTag Objekte sollen min. alle Felder des 'tag-form' Formulars aufnehmen.
  */
 
-function GeoTag(latitude, longitude, name, hashtag) {
+function GeoTag(geotagID, latitude, longitude, name, hashtag) {
+    this.geotagID = geotagID;
     this.latitude = latitude;
     this.longitude = longitude;
     this.name = name;
@@ -80,9 +81,12 @@ var inMemorySpeicherung = (function () {
 
             },
 
-            addGeotag: function (name, latitude, longitude, hashtag) {
+            // TODO Add geotagID in Constructor and fix every code where we call it (on server side, not on client side)
+            //        just increase the number every time a geotag is added
 
-                var newGeotag = new GeoTag(latitude, longitude, name, hashtag);
+            addGeotag: function (geotagID, name, latitude, longitude, hashtag) {
+
+                var newGeotag = new GeoTag(geotagID, latitude, longitude, name, hashtag);
                 geoTagArray.push(newGeotag);
             },
 
@@ -147,12 +151,12 @@ app.post('/tagging', jsonParser, function (req, res) {
 
     var searchArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude);
 
-    // res.set('Content-Type', 'application/json')
+    res.set('Content-Type', 'application/json')
     res.send(
         {
-            taglist: searchArray,
-            latitudeUsr: req.body.latitude,
-            longitudeUsr: req.body.longitude
+            taglist: JSON.stringify(searchArray),
+            latitudeUsr: JSON.stringify(req.body.latitude),
+            longitudeUsr: JSON.stringify(req.body.longitude)
         }
     )
 
@@ -173,33 +177,25 @@ app.post('/tagging', jsonParser, function (req, res) {
 // TODO: CODE ERGÄNZEN
 app.post('/discovery', function (req, res) {
 
-    res.set('Content-Type', 'text/html')
-
-    console.log(req.body);
-
-    var searchterm = req.body.searchTerm;
     var radius = 10;
-    var returnTags = [];
+    var searchResults = [];
+    // var query = url.parse(req.url, true).query;
+    var searchtermURL = req.query.searchterm;// query.searchterm;
+    var latitudeURL = req.query.latitude; // query.latitude;
+    var longitudeURL = req.query.longitude; // query.longitude;
 
-    // res.send('POST request to homepage');
-
-    if (searchterm == undefined) {
-        returnTags = inMemorySpeicherung.radiusSearch(radius, req.body.latitude, req.body.longitude);
-    } else {
-        returnTags = inMemorySpeicherung.searchForGeotag(searchterm);
+    if (searchtermURL){
+        searchResults = inMemorySpeicherung.searchForGeotag(searchtermURL);
+    }
+    else if (latitudeURL && longitudeURL) {
+        searchResults = inMemorySpeicherung.radiusSearch(radius, latitudeURL, longitudeURL);
+    }
+    else{
+        alert("No searchterm or latitude / longitude given. Fill in the freaking form.");
     }
 
-
-    res.send('gta', {
-        taglist: returnTags,
-        latitudeHidden: req.body.latitude_search,
-        longitudeHidden: req.body.longitude_search
-    });
-
-});
-
-app.get('geotags', (req, res) => {
-   res.send('Hello');
+    res.status(201);
+    res.send(JSON.stringify(searchResults));
 });
 
 const geotagsRoute = require('./routes/geotags')
