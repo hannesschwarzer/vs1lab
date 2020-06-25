@@ -189,6 +189,7 @@ app.post('/discovery', function (req, res) {
         returnTags = inMemorySpeicherung.searchForGeotag(searchterm);
     }
 
+
     res.send('gta', {
         taglist: returnTags,
         latitudeHidden: req.body.latitude_search,
