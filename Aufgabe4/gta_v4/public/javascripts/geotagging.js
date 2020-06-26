@@ -55,15 +55,20 @@ var ajax = new XMLHttpRequest();
 ajax.onreadystatechange = function () {
     if (ajax.readyState === ajax.DONE) {
         if (ajax.status == 200) {
-            var geoTagsList = JSON.parse(ajax.responseText);
+            var serverResponse = JSON.parse(ajax.responseText);
+            var geoTagsList = serverResponse.taglist;
             gtaLocator.updateLocation();
+
             var htmlString = '';
 
             geoTagsList.forEach(function (data) {
                 htmlString +=
                     "<li> " + data.name + "  (" + data.latitude + ", " + data.longitude + ") " + data.hashtag + " </li>";
             })
-            document.getElementById("results").innerHTML = htmlString;
+
+            document.getElementById("results").innerHTML += htmlString;
+
+        }else if (ajax.status == 201){
 
         } else if (ajax.status == 400) {
             alert('There was an 400 error');
@@ -97,11 +102,12 @@ discovery.addEventListener("click", function (event) {
     var searchTerm = document.getElementById("discovery_searchterm").value;
     var latitudeToSend = document.getElementById("latitude_search").value;
     var longitudeToSend = document.getElementById("longitude_search").value;
-    ajax.open('GET',
-        '/discovery?searchterm=' + searchTerm + '&latitude=' + latitudeToSend + '&longitude=' + longitudeToSend);
+    var methodUrl = '/discovery?searchterm=' + searchTerm + '&latitude=' + latitudeToSend + '&longitude=' + longitudeToSend;
+    console.log(methodUrl)
+    ajax.open('GET',methodUrl,true);
     ajax.setRequestHeader("Content-type", "application/json");
     ajax.setRequestHeader("Data-Type", "json");
-    ajax.send();
+    ajax.send(null);
 })
 
 var gtaLocator = (function GtaLocator(geoLocationApi) {
@@ -181,7 +187,6 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         console.log("Generated Maps Url: " + urlString);
         return urlString;
     };
-
 
 
     return { // Start öffentlicher Teil des Moduls ...

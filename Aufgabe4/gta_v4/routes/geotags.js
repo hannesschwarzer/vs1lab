@@ -8,10 +8,9 @@ var jsonParser = bodyParser.json();
 
 
 router.post('/', jsonParser, (req, res) => {
-    inMemorySpeicherung.addGeotag(
-        req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag);
     var searchArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude);
-
+    searchArray.push(inMemorySpeicherung.addGeotag(
+        req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag))
 })
 
 
