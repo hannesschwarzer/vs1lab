@@ -57,8 +57,6 @@ ajax.onreadystatechange = function () {
         if (ajax.status == 200) {
             var serverResponse = JSON.parse(ajax.responseText);
             var geoTagsList = serverResponse.taglist;
-            gtaLocator.updateLocation();
-
             var htmlString = '';
 
             geoTagsList.forEach(function (data) {
@@ -66,11 +64,11 @@ ajax.onreadystatechange = function () {
                     "<li> " + data.name + "  (" + data.latitude + ", " + data.longitude + ") " + data.hashtag + " </li>";
             })
 
+            document.getElementById("results").innerHTML = "";
             document.getElementById("results").innerHTML += htmlString;
+            gtaLocator.updateLocation();
 
-        }else if (ajax.status == 201){
-
-        } else if (ajax.status == 400) {
+        }else if (ajax.status == 400) {
             alert('There was an 400 error');
         } else {
             alert('Something else other than 200 was returned')

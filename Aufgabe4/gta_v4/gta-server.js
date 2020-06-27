@@ -84,7 +84,9 @@ var inMemorySpeicherung = (function () {
             },
 
             addGeotag: function (name, latitude, longitude, hashtag) {
-                return new GeoTag(latitude, longitude, name, hashtag);
+                var object = new GeoTag(latitude, longitude, name, hashtag);
+                geoTagArray.push(object)
+                return object
             },
 
             deleteGeotag: function (name, latitude, longitude, hashtag) {
@@ -149,6 +151,7 @@ app.post('/tagging', jsonParser, function (req, res) {
     searchArray.push(inMemorySpeicherung.addGeotag(req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag))
 
     res.set('Content-Type', 'application/json')
+    res.status(200);
     res.send(
         {
             taglist: searchArray,
@@ -189,8 +192,13 @@ app.get('/discovery', function (req, res) {
         alert("No searchterm or latitude / longitude given. Fill in the freaking form.");
     }
 
-    res.status(201);
-    res.send(JSON.stringify(searchResults));
+    res.set('Content-Type', 'application/json')
+    res.status(200);
+    res.send({
+        taglist: searchResults,
+        latitudeHidden: req.body.latitude_search,
+        longitudeHidden: req.body.longitude_search
+    });
 });
 
 const geotagsRoute = require('./routes/geotags')
