@@ -56,9 +56,7 @@ function GeoTag(latitude, longitude, name, hashtag) {
  * - Funktion zum Löschen eines Geo Tags.
  */
 
-// TODO: CODE ERGÄNZEN
 
-    //need to be initialized
 var inMemorySpeicherung = (function () {
         var geoTagArray = [];
 
@@ -89,11 +87,10 @@ var inMemorySpeicherung = (function () {
                 return object
             },
 
-            deleteGeotag: function (name, latitude, longitude, hashtag) {
+            deleteGeotag: function (geoTagID) {
 
                 geoTagArray.forEach(function () {
-                    if (this.name === name && this.latitude === latitude && this.longitude === longitude
-                        && this.hashtag === hashtag) {
+                    if (this.geotagID === geoTagID) {
                         var positionGeoTagToDelete = geoTagArray.indexOf(this);
                         geoTagArray.splice(positionGeoTagToDelete, positionGeoTagToDelete);
                     }
@@ -139,7 +136,6 @@ app.get('/', function (req, res) {
 
 
 
-// TODO: CODE ERGÄNZEN START
 
 var jsonParser = bodyParser.json();
 
@@ -147,8 +143,11 @@ app.post('/tagging', jsonParser, function (req, res) {
     console.log(req.body)
 
     var searchArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude);
+    var newObject = inMemorySpeicherung.addGeotag(req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag)
 
-    searchArray.push(inMemorySpeicherung.addGeotag(req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag))
+    searchArray.push(newObject)
+
+    console.log("posting object " + newObject.geotagID + "...")
 
     res.set('Content-Type', 'application/json')
     res.status(200);
@@ -174,7 +173,6 @@ app.post('/tagging', jsonParser, function (req, res) {
  * Falls 'term' vorhanden ist, wird nach Suchwort gefiltert.
  */
 
-// TODO: CODE ERGÄNZEN
 app.get('/discovery', function (req, res) {
     var radius = 10;
     var searchResults = [];
