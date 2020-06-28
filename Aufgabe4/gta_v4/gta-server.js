@@ -61,7 +61,8 @@ var inMemorySpeicherung = (function () {
     var geoTagArray = [];
 
     return {
-        radiusSearch: function (latitude, longitude, radius) {
+        radiusSearch: function (latitude, longitude) {
+
             var radius = 10;
 
             return geoTagArray.filter(function (tag) {
@@ -82,7 +83,7 @@ var inMemorySpeicherung = (function () {
 
         searchForGeotagID: function (geoTagID) {
             return geoTagArray.filter(function (tag) {
-                return tag.geotagID.indexOf(geoTagID) > -1;
+                return tag.geotagID.indexOf(geoTagID) > -1
             });
 
         },
@@ -207,7 +208,7 @@ app.get('/discovery', function (req, res) {
     if (searchtermURL) {
         searchResults = inMemorySpeicherung.searchForGeotag(searchtermURL);
     } else if (latitudeURL && longitudeURL) {
-        searchResults = inMemorySpeicherung.radiusSearch(latitudeURL, longitudeURL, radius);
+        searchResults = inMemorySpeicherung.radiusSearch(radius, latitudeURL, longitudeURL);
     } else {
         searchResults = inMemorySpeicherung.returnGeoTags();
     }
@@ -264,18 +265,11 @@ app.delete('/geotags/:geotagID', (req, res) => {
 })
 
 app.get('/geotags/:geotagID', (req, res) => {
-    var searchResults = [];
     var geotagID = req.params.geotagID;
+    res.json({
+        taglist: inMemorySpeicherung.searchForGeotagID(geotagID)
 
-    if (searchtermURL) {
-        searchResults = inMemorySpeicherung.searchForGeotag(searchtermURL);
-    } else if (latitudeURL && longitudeURL && radius) {
-        searchResults = inMemorySpeicherung.radiusSearch(radius, latitudeURL, longitudeURL);
-    } else {
-        searchResults = inMemorySpeicherung.returnGeoTags()
-    }
-
-    res.json(searchResults)
+    })
 })
 
 app.put('/geotags/:geotagID', (req, res) => {
@@ -297,6 +291,25 @@ app.put('/geotags/:geotagID', (req, res) => {
 /**
  * Setze Port und speichere in Express.
  */
+
+/**
+ *
+ * Route fürs Anlegen von Geotags
+ */
+
+var bodyParser = require('body-parser');
+var jsonParser = bodyParser.json();
+
+app.post('geotags/', jsonParser, (req, res) => {
+    var searchArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude);
+    searchArray.push(inMemorySpeicherung.addGeotag(
+        req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag))
+    res.json(searchArray)
+})
+
+app.get('geotags/', jsonParser, (req, res) => {
+
+})
 
 var port = 3000;
 app.set('port', port);
