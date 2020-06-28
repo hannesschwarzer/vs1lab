@@ -208,6 +208,25 @@ module.exports = inMemorySpeicherung;
  * Setze Port und speichere in Express.
  */
 
+/**
+ *
+ * Route fürs Anlegen von Geotags
+ */
+
+var bodyParser = require('body-parser');
+var jsonParser = bodyParser.json();
+
+app.post('geotags/', jsonParser, (req, res) => {
+    var searchArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude);
+    searchArray.push(inMemorySpeicherung.addGeotag(
+        req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag))
+    res.json(searchArray)
+})
+
+app.get('geotags/', jsonParser, (req, res) => {
+
+})
+
 var port = 3000;
 app.set('port', port);
 
