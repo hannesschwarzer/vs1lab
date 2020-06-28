@@ -8,7 +8,7 @@ var jsonParser = bodyParser.json();
 const modul = require('inMemorySpeicherung');
 
 
-router.post('/', jsonParser, (req, res) => {
+router.post('/geotags', jsonParser, (req, res) => {
     var searchArray = modul.radiusSearch(req.body.latitude, req.body.longitude);
     var object = modul.addGeotag(
         req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag);
@@ -18,7 +18,7 @@ router.post('/', jsonParser, (req, res) => {
     res.json(searchArray)
 })
 
-router.get('/', (req, res) => {
+router.get('/geotags', (req, res) => {
     var searchResults = [];
 
     var searchtermURL = req.query.searchterm;
@@ -35,7 +35,7 @@ router.get('/', (req, res) => {
         searchResults = modul.returnGeoTags()
     }
 
-    res.JSON(searchResults)
+    res.json(searchResults);
 })
 
 
