@@ -222,10 +222,71 @@ app.get('/discovery', function (req, res) {
     });
 });
 
+app.post('geotags/', jsonParser, (req, res) => {
+    var searchArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude);
+    var object = inMemorySpeicherung.addGeotag(
+        req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag);
+    searchArray.push(object)
+    res.status(201)
+    res.location("/geotags/" + object.geotagID)
+    res.json(searchArray)
+})
+
+app.get('/geotags', (req, res) => {
+    var searchResults = [];
+
+    var searchtermURL = req.query.searchterm;
+    var latitudeURL = req.query.latitude;
+    var longitudeURL = req.query.longitude;
+    var radius = req.query.radius;
+
+
+    if (searchtermURL) {
+        searchResults = inMemorySpeicherung.searchForGeotag(searchtermURL);
+    } else if (latitudeURL && longitudeURL && radius) {
+        searchResults = inMemorySpeicherung.radiusSearch(radius, latitudeURL, longitudeURL);
+    } else {
+        searchResults = inMemorySpeicherung.returnGeoTags()
+    }
+
+    res.json(searchResults)
+})
+
+
+app.delete('/geotags/:geotagID', (req, res) => {
+    var geotagID = req.params.geotagID;
+    var geoTags = inMemorySpeicherung.deleteGeotag(geotagID)
+    res.status(200)
+    console.log("Object" + geotagID + " deleted!")
+    res.json({
+        taglist: geoTags
+    });
+
+})
+
+app.get('/geotags/:geotagID', (req, res) => {
+    var geotagID = req.params.geotagID;
+    res.json({
+        taglist: inMemorySpeicherung.searchForGeotagID(geotagID)
+
+    })
+})
+
+app.put('/geotags/:geotagID', (req, res) => {
+    var geotagID = req.params.geotagID;
+    var latitudeURL = req.query.latitude;
+    var longitudeURL = req.query.longitude;
+    var nameURL = req.query.name;
+    var hashTag = req.query.hashTag;
+
+    inMemorySpeicherung.changeGeotag(nameURL, longitudeURL, latitudeURL, hashTag, geotagID);
+    res.status(200);
+    res.send();
+})
+
 // const geotagsRoute = require('./routes/geotags')
 // app.use('/geotags', geotagsRoute);
 
-module.exports = inMemorySpeicherung;
 
 /**
  * Setze Port und speichere in Express.
