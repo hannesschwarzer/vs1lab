@@ -76,14 +76,7 @@ var inMemorySpeicherung = (function () {
 
         searchForGeotag: function (searchterm) {
             return geoTagArray.filter(function (tag) {
-                return tag.hashtag.indexOf(searchterm) > -1 || tag.name.indexOf(searchterm) > -1 || tag.latitude.indexOf(searchterm) > -1 || tag.longitude.indexOf(searchterm) > -1;
-            });
-
-        },
-
-        searchForGeotagID: function (geoTagID) {
-            return geoTagArray.filter(function (tag) {
-                return tag.geotagID.indexOf(geoTagID) > -1
+                return tag.geotagID.indexOf(searchterm) > -1 || tag.hashtag.indexOf(searchterm) > -1 || tag.name.indexOf(searchterm) > -1 || tag.latitude.indexOf(searchterm) > -1 || tag.longitude.indexOf(searchterm) > -1;
             });
 
         },
@@ -267,8 +260,7 @@ app.delete('/geotags/:geotagID', (req, res) => {
 app.get('/geotags/:geotagID', (req, res) => {
     var geotagID = req.params.geotagID;
     res.json({
-        taglist: inMemorySpeicherung.searchForGeotagID(geotagID)
-
+        taglist: inMemorySpeicherung.searchForGeotag(geotagID)
     })
 })
 
