@@ -199,8 +199,10 @@ app.get('/discovery', function (req, res) {
     });
 });
 
-const geotagsRoute = require('./routes/geotags')
-app.use('/geotags', geotagsRoute);
+// const geotagsRoute = require('./routes/geotags')
+// app.use('/geotags', geotagsRoute);
+
+module.exports = inMemorySpeicherung;
 
 /**
  * Setze Port und speichere in Express.
