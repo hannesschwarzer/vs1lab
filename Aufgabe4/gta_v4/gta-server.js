@@ -61,9 +61,11 @@ var inMemorySpeicherung = (function () {
     var geoTagArray = [];
 
     return {
-        radiusSearch: function (latitude, longitude) {
+        radiusSearch: function (latitude, longitude, radius) {
 
-            var radius = 10;
+            if(radius == undefined){
+                radius = 10;
+            }
 
             return geoTagArray.filter(function (tag) {
                 var distanceLongitude = longitude - tag.longitude;
@@ -83,14 +85,14 @@ var inMemorySpeicherung = (function () {
 
         searchForGeotagID: function (geoTagID) {
             return geoTagArray.filter(function (tag) {
-                return tag.geotagID.indexOf(geoTagID) > -1
+                return tag.geotagID == geoTagID;
             });
 
         },
 
         changeGeotag: function (name, longitude, latitude, hashtag, geotagID) {
           geoTagArray.forEach(function (tag) {
-              if(tag.geotagID === geotagID) {
+              if(tag.geotagID == geotagID) {
                   var objectToChange = tag;
                   if(name !== undefined){ objectToChange.name = name;}
                   if(longitude !== undefined){objectToChange.longitude = longitude;}
@@ -109,9 +111,9 @@ var inMemorySpeicherung = (function () {
         deleteGeotag: function (geoTagID) {
 
             geoTagArray.forEach(function (tag) {
-                if (tag.geotagID === geoTagID) {
+                if (tag.geotagID == geoTagID) {
                     var positionGeoTagToDelete = geoTagArray.indexOf(tag);
-                    geoTagArray.splice(positionGeoTagToDelete, positionGeoTagToDelete);
+                    geoTagArray.splice(positionGeoTagToDelete, 1);
                 }
 
             })
@@ -208,7 +210,7 @@ app.get('/discovery', function (req, res) {
     if (searchtermURL) {
         searchResults = inMemorySpeicherung.searchForGeotag(searchtermURL);
     } else if (latitudeURL && longitudeURL) {
-        searchResults = inMemorySpeicherung.radiusSearch(radius, latitudeURL, longitudeURL);
+        searchResults = inMemorySpeicherung.radiusSearch(latitudeURL, longitudeURL,radius);
     } else {
         searchResults = inMemorySpeicherung.returnGeoTags();
     }
@@ -222,7 +224,7 @@ app.get('/discovery', function (req, res) {
     });
 });
 
-app.post('geotags/', jsonParser, (req, res) => {
+app.post('/geotags', jsonParser, (req, res) => {
     var searchArray = inMemorySpeicherung.radiusSearch(req.body.latitude, req.body.longitude);
     var object = inMemorySpeicherung.addGeotag(
         req.body.name, req.body.latitude, req.body.longitude, req.body.hashtag);
@@ -244,11 +246,12 @@ app.get('/geotags', (req, res) => {
     if (searchtermURL) {
         searchResults = inMemorySpeicherung.searchForGeotag(searchtermURL);
     } else if (latitudeURL && longitudeURL && radius) {
-        searchResults = inMemorySpeicherung.radiusSearch(radius, latitudeURL, longitudeURL);
+        searchResults = inMemorySpeicherung.radiusSearch(latitudeURL, longitudeURL,radius);
     } else {
         searchResults = inMemorySpeicherung.returnGeoTags()
     }
 
+    res.status(200);
     res.json(searchResults)
 })
 
@@ -266,10 +269,8 @@ app.delete('/geotags/:geotagID', (req, res) => {
 
 app.get('/geotags/:geotagID', (req, res) => {
     var geotagID = req.params.geotagID;
-    res.json({
-        taglist: inMemorySpeicherung.searchForGeotagID(geotagID)
-
-    })
+    res.status(200);
+    res.json(inMemorySpeicherung.searchForGeotagID(geotagID))
 })
 
 app.put('/geotags/:geotagID', (req, res) => {
